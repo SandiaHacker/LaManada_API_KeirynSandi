@@ -1,0 +1,6 @@
+@LaManada_API_KeirynSandi_HostAddress = http://localhost:5171
+
+GET {{LaManada_API_KeirynSandi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
