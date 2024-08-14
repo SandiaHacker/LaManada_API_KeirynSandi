@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LaManada_API_KeirynSandi.Models;
+using LaManada_API_KeirynSandi.ModelsDTO;
 
 namespace LaManada_API_KeirynSandi.Controllers
 {
@@ -39,6 +40,50 @@ namespace LaManada_API_KeirynSandi.Controllers
             }
 
             return user;
+        }
+
+        [HttpGet("GetUserInfoByEmail")]
+        //Esta version de get muestra la informacion del usuario
+        //según su correo,y será usada para cargar la información del ususario
+        //justo despues de la validación del login en la app,
+        //con esto crearemos un usuario global
+        public ActionResult<IEnumerable<UsuarioDTO>> GetUserInfoByEmail(string pEmail)
+        {
+            var query = (from u in _context.Users
+                         join ur in _context.UserRoles    
+                         on u.UserRoleId equals ur.UserRoleId
+                         where u.Email == pEmail
+                         select new
+                         {
+                            id = u.UsersId,
+                            correo = u.Email,
+                            nombre = u.FirstName,
+                            telefono = u.PhoneNumber,
+                            rolid = u.UserRoleId,
+                            descripcion = ur.UserRoleId
+                         }
+                         ).ToList();
+
+            List<UsuarioDTO> list = new List<UsuarioDTO>();
+
+            foreach (var item in list)
+            {
+                UsuarioDTO nuevoUsuario = new UsuarioDTO()
+                {
+                    UsersId = item.UsersId,
+                    Correo = item.Correo,
+                    Nombre = item.Nombre,
+                    Telefono = item.Telefono,
+                    RolID = item.RolID,
+                    RolDescripcion=item.RolDescripcion,
+                };
+                list.Add(nuevoUsuario);
+            }
+
+            if (list == null) { return NotFound(); }
+
+            return list;
+
         }
 
         // PUT: api/Users/5

@@ -27,7 +27,10 @@ public partial class LaManadaContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
+    public virtual DbSet<Vwalluser> Vwallusers { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("SERVER=.;DATABASE=LA_MANADA;INTEGRATED SECURITY=FALSE;User Id=P62024;Password=123hola*;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -165,6 +168,30 @@ public partial class LaManadaContext : DbContext
             entity.Property(e => e.RoleName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Vwalluser>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VWallusers");
+
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.LastName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.UserRoleId).HasColumnName("UserRoleID");
         });
 
         OnModelCreatingPartial(modelBuilder);
